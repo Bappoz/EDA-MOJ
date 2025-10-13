@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-int busca_sete(int n, int *contador);
+int busca_sete(unsigned long long n, int *contador);
 
 int main(){
 
-    int n;
+    unsigned long long n;
     int contador = 0;
-    scanf("%d", &n);
+    scanf("%llu", &n);
 
     /*
     OBJETIVO: Contar a ocorrencia de 7's em um inteiro
@@ -28,7 +28,7 @@ int main(){
     return 0;
 }
 
-int busca_sete(int n, int *contador){
+int busca_sete(unsigned long long n, int *contador){
     
     if( n == 0){
         return *contador;

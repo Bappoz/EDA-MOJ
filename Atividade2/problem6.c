@@ -31,9 +31,8 @@ int pa_recursiva(int *v, int primeiro, int ultimo){
 }
 
 
-// função main só pra via de testes :
 
-/*int main(){
+int main(){
     
     int n;
     scanf("%d", &n);
@@ -47,5 +46,5 @@ int pa_recursiva(int *v, int primeiro, int ultimo){
 
     return 0;
 }
-*/
+
 
