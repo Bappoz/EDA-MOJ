@@ -1,35 +1,46 @@
 #include <stdio.h>
 
+#define MAX_REGIOES 8
+#define MAX_TAMANHO 100000
 
-void inserction_sort(int *vetor, int n){
+int main() {
+    int quantidadeSubmissoes[MAX_REGIOES];
+    int submissao[MAX_REGIOES][MAX_TAMANHO];
+    int indiceAtual[MAX_REGIOES];
+    int totalSubmissoes = 0;
+    int totalRegioes = MAX_REGIOES;
 
-    for(int i = 1; i < n; i++){
-        int tmp = vetor[i];
-        int j = i - 1;
+    for (int i = 0; i < totalRegioes; i++) {
+        if (scanf("%d", &quantidadeSubmissoes[i]) != 1)
+            quantidadeSubmissoes[i] = 0;
 
-        for(; j >= 0 && vetor[j] > tmp; j--){
-            vetor[j+1] = vetor[j];
+        for (int j = 0; j < quantidadeSubmissoes[i]; j++) {
+            scanf("%d", &submissao[i][j]);
         }
-        vetor[j+1] = tmp;
-    }
-}
 
-int main(){
-    int vetor[1000];
-    int n;
-    int contador = 0;
-    while(scanf("%d", &n) != EOF){
-        vetor[contador++] = n;
-        if(contador == 1000) break;
+        indiceAtual[i] = 0;
+        totalSubmissoes += quantidadeSubmissoes[i];
     }
 
-    inserction_sort(vetor, contador);
+    for (int k = 0; k < totalSubmissoes; k++) {
+        int menorTempo = 1000001;
+        int regiaoDoMenor = -1;
 
-    for(int k = 0; k < contador; k++){
-        printf("%d ", vetor[k]);
+        for (int r = 0; r < totalRegioes; r++) {
+            if (indiceAtual[r] < quantidadeSubmissoes[r]) {
+                int tempo = submissao[r][indiceAtual[r]];
+                if (tempo < menorTempo) {
+                    menorTempo = tempo;
+                    regiaoDoMenor = r;
+                }
+            }
+        }
+
+        if (k > 0) printf(" ");
+        printf("%d", menorTempo);
+        indiceAtual[regiaoDoMenor]++;
     }
 
     printf("\n");
-
     return 0;
 }
