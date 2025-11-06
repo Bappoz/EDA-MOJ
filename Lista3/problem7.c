@@ -1,44 +1,86 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
+void merge(int v[], int ini, int meio, int fim) {
+    int n1 = meio - ini + 1;
+    int n2 = fim - meio;
 
+    int *esq = malloc(n1 * sizeof(int));
+    int *dir = malloc(n2 * sizeof(int));
 
-int main(){
+    for (int i = 0; i < n1; i++) esq[i] = v[ini + i];
+    for (int j = 0; j < n2; j++) dir[j] = v[meio + 1 + j];
+
+    int i = 0, j = 0, k = ini;
+    while (i < n1 && j < n2) {
+        if (esq[i] <= dir[j]) {
+            v[k] = esq[i];
+            i++;
+        } else {
+            v[k] = dir[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        v[k] = esq[i];
+        i++;
+        k++;
+    }
+    while (j < n2) {
+        v[k] = dir[j];
+        j++;
+        k++;
+    }
+
+    free(esq);
+    free(dir);
+}
+
+void merge_sort(int v[], int ini, int fim) {
+    if (ini < fim) {
+        int meio = (ini + fim) / 2;
+        merge_sort(v, ini, meio);
+        merge_sort(v, meio + 1, fim);
+        merge(v, ini, meio, fim);
+    }
+}
+
+int busca_binaria(int v[], int n, int alvo) {
+    int ini = 0, fim = n - 1;
+    while (ini <= fim) {
+        int meio = (ini + fim) / 2;
+        if (v[meio] == alvo) return 1;
+        if (v[meio] < alvo)
+            ini = meio + 1;
+        else
+            fim = meio - 1;
+    }
+    return 0;
+}
+
+int main() {
     int n;
-    scanf("%d", &n);
-    
-    int *vetor_probidos = malloc(n*sizeof(int));
+    if (scanf("%d", &n) != 1) return 0;
 
-    for(int i = 0; i < n; i++){
-        scanf("%d", &vetor_probidos[i]);
+    int *proibidos = malloc(n * sizeof(int));
+    if (!proibidos) return 0;
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &proibidos[i]);
     }
 
-    int val;
-    int contador = 0;
-    int vetor_armazem[1000];
-    while(scanf("%d", &val) != EOF){
-        vetor_armazem[contador++] = val;
-        if (contador == 1000) break;
-    }
-    int find = 0;
+    merge_sort(proibidos, 0, n - 1);
 
-    for(int j = 0; j < contador; j++){
-        for(int i = 0; i < n; i++){
-            if(vetor_armazem[j] == vetor_probidos[i]){
-                printf("sim\n");
-                find = 1;
-                break;
-            }
-            find = 0;
-        }
-        if(find == 0){
+    int valor;
+    while (scanf("%d", &valor) != EOF) {
+        if (busca_binaria(proibidos, n, valor))
+            printf("sim\n");
+        else
             printf("nao\n");
-        }
-        
     }
 
-    free(vetor_probidos);
-    free(vetor_armazem);
+    free(proibidos);
     return 0;
 }

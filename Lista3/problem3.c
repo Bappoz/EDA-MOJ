@@ -1,110 +1,75 @@
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
 
-void merge(int *leftArray, int *rightArray, int *vetor, int n){
-    int middle = n / 2;
+void merge(int v[], int ini, int meio, int fim) {
+    int n1 = meio - ini + 1;
+    int n2 = fim - meio;
 
-    int left_size = middle;
-    int right_size = n - middle;
+    int *esq = malloc(n1 * sizeof(int));
+    int *dir = malloc(n2 * sizeof(int));
 
-    int i = 0;
-    int l = 0;
-    int r = 0;
+    for (int i = 0; i < n1; i++) esq[i] = v[ini + i];
+    for (int j = 0; j < n2; j++) dir[j] = v[meio + 1 + j];
 
-    while(l < left_size && r < right_size){
-        if(leftArray[l] < rightArray[r]){
-            vetor[i] = leftArray[l];
-            l++;
-            i++;
-        }
-        else{
-            vetor[i] = rightArray[r];
-            r++;
-            i++;
+    int i = 0, j = 0, k = ini;
+    while (i < n1 && j < n2) {
+        if (esq[i] <= dir[j]) {
+            v[k++] = esq[i++];
+        } else {
+            v[k++] = dir[j++];
         }
     }
-    while( l < left_size){
-        vetor[i] = leftArray[l];
-        l++;
-        i++;
-    }
-    while(r < right_size){
-        vetor[i] = rightArray[r];
-        r++;
-        i++;
-    }
-    
-    free(leftArray);
-    free(rightArray);
-    return;
+    while (i < n1) v[k++] = esq[i++];
+    while (j < n2) v[k++] = dir[j++];
+
+    free(esq);
+    free(dir);
 }
 
-
-void mergeSort(int *vetor, int n){
-    if( n <= 1) return;
-    
-    int inicio = 0;
-    int fim = n;
-    int m = (fim + inicio)/2;
-
-    int left_size = m - inicio;
-    int right_size = fim - m;
-
-    int *leftArray = malloc(left_size * sizeof(int));
-    int *rightArray = malloc(right_size*sizeof(int));
-
-
-    if(!leftArray || !rightArray){
-        free(leftArray);
-        free(rightArray);
-        return;
+void merge_sort(int v[], int ini, int fim) {
+    if (ini < fim) {
+        int meio = (ini + fim) / 2;
+        merge_sort(v, ini, meio);
+        merge_sort(v, meio + 1, fim);
+        merge(v, ini, meio, fim);
     }
-
-    int i = 0; int j = 0;
-
-    for(; i < fim; i++){
-        if(i < m){
-            leftArray[i] = vetor[i];
-        }
-        else{
-            rightArray[j] = vetor[i];
-            j++;
-        }
-    }
-
-    mergeSort(leftArray, left_size);
-    mergeSort(rightArray, right_size);
-    merge(leftArray, rightArray, vetor, n);
 }
 
-
-int buscaBinaria(){
-
+int busca_binaria(int v[], int n, int chave) {
+    int ini = 0, fim = n - 1;
+    while (ini <= fim) {
+        int meio = (ini + fim) / 2;
+        if (v[meio] == chave) return meio;
+        if (v[meio] < chave)
+            ini = meio + 1;
+        else
+            fim = meio - 1;
+    }
+    return -1;
 }
 
-int novaOrdenacao(){
+int main() {
+    int n, chave;
+    scanf("%d %d", &n, &chave);
 
-}
+    int *senhas = malloc(n * sizeof(int));
+    int *ordenado = malloc(n * sizeof(int));
 
-int main(){
-    int n; int c;
-    scanf("%d %d", &n, &c);
-
-    int *vetor = malloc(n*sizeof(int));
-    int n_entradas;
-
-    for(int i = 0; i < n; i++){
-        scanf("%d", &n_entradas);
-        vetor[i] = n_entradas;
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &senhas[i]);
+        ordenado[i] = senhas[i];
     }
 
-    mergeSort(vetor, n);
+    merge_sort(ordenado, 0, n - 1);
 
-    for(int i = 0; i < n; i++){
-        printf("%d ", vetor[i]);
-    }
-    
-    free(vetor);
+    int indice = busca_binaria(ordenado, n, chave);
+    printf("%d\n", indice);
 
+    for (int i = indice; i < n; i++) printf("%d ", senhas[i]);
+    for (int i = 0; i < indice; i++) printf("%d ", senhas[i]);
+    printf("\n");
+
+    free(senhas);
+    free(ordenado);
     return 0;
 }
