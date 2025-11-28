@@ -1,13 +1,11 @@
-#include <stdio.h>
+
 #include <stdlib.h>
 #include <stdbool.h>
-
 
 struct ListNode {
     int val;
     struct ListNode *next;
 };
-
 
 typedef struct Stack{
     struct ListNode* topNode;
@@ -21,11 +19,11 @@ Stack *create_stack(){
     return stack;
 }
 
-void push(Stack* stack, int value){
+void push(Stack* stack, char c){
     struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
     if(newNode == NULL) return;
 
-    newNode->val = value;
+    newNode->val = c;
     newNode->next = stack->topNode;
     stack->topNode = newNode;
 }
@@ -34,41 +32,48 @@ bool is_empty(Stack* stack){
     return stack->topNode == NULL;
 }
 
-void pop(Stack* stack){
-    if(is_empty(stack)) return;
+char pop(Stack* stack){
+    if(is_empty(stack)) return '\0';
 
     struct ListNode* tmp = stack->topNode;
+    char c = tmp->val;
 
     stack->topNode = stack->topNode->next;
     free(tmp);
+    return c;
 }
 
 void freeStack(Stack* stack){
-    while(is_empty(stack) != true){
-            
-        struct ListNode *tmp = stack->topNode;
-        stack->topNode = stack->topNode->next;
-        free(tmp);
+    while(!is_empty(stack)){
+        pop(stack);
     }
     free(stack);
 }
 
-bool isPalindrome(struct ListNode* head) {
-    struct ListNode* curr = head;
+int main(){
+    int n;
+    scanf("%d", &n);
+    
+    char str[101];
+    scanf("%s", str);
+    
     Stack* stack = create_stack();
-
-    while(curr != NULL){
-        push(stack, curr->val);
-        curr = curr->next;
+    
+    // Empilha todos os caracteres
+    for(int i = 0; i < n; i++){
+        push(stack, str[i]);
     }
-    curr = head;
-    while(curr != NULL){
-        if(curr->val != stack->topNode->val) return false;
-        curr = curr->next;
-        pop(stack);
+    
+    // Compara string original com string invertida (da pilha)
+    for(int i = 0; i < n; i++){
+        if(str[i] != pop(stack)){
+            printf("0\n");
+            freeStack(stack);
+            return 0;
+        }
     }
-
+    
+    printf("1\n");
     freeStack(stack);
-
-    return true;
+    return 0;
 }
