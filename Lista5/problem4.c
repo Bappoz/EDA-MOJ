@@ -7,13 +7,19 @@ int main() {
     char linha[MAX];
 
     while (fgets(linha, sizeof(linha), stdin)) {
+        // Remove quebra de linha
+        linha[strcspn(linha, "\n")] = '\0';
+        
+        // Ignora linhas vazias
+        if (strlen(linha) == 0) {
+            continue;
+        }
 
         int pilha[MAX];  // 0 = boa, 1 = estragada
         int topo = -1;
         int count = 0;
 
-        for (int i = 0; linha[i] != '\0' && linha[i] != '\n'; i++) {
-
+        for (int i = 0; linha[i] != '\0'; i++) {
             char c = linha[i];
 
             if (c == '[') {
